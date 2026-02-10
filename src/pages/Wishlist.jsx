@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector,useDispatch } from 'react-redux'
 import { removeFromWishlist } from '../Redux/slices/wishlistSlices'
+import { addToCart } from '../Redux/slices/cartSlice'
 
 function Wishlist() {
   const wishlist = useSelector(state => state.wishlistReducer)
@@ -42,7 +43,7 @@ function Wishlist() {
                             ></i>
                           </button>
 
-                          <button className="btn">
+                          <button className="btn" onClick={()=>{dispatch(addToCart(item.id))}}>
                             <i
                               className="fa-solid fa-cart-plus"
                               style={{ color: '#0a5ef0', fontSize: '25px' }}

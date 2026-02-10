@@ -35,7 +35,7 @@ function Cart() {
                     <small className="text-muted">Unit Price: ₹{item.price}</small>
                   </div>
 
-                  <button className="btn ms-auto text-danger">
+                  <button className="btn ms-auto text-danger" onClick={()=>{dispatch(removeFromCart(item.id))}}>
                     <i className="fa-solid fa-trash"></i>
                   </button>
                 </div>
