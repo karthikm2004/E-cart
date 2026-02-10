@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { fetchProductThunk } from "../Redux/slices/productSlice";
+import { fetchProductThunk, nextPage, prevPage } from "../Redux/slices/productSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { addToWishlist } from "../Redux/slices/wishlistSlices";
 import { addToCart } from "../Redux/slices/cartSlice";
@@ -8,13 +8,29 @@ import { addToCart } from "../Redux/slices/cartSlice";
 function Landing() {
   const dispatch = useDispatch();
 
-  const { products, pending, error } = useSelector(
+  const { products, pending, error, currentPage } = useSelector(
     (state) => state.productreducer,
   );
+
+  const productsPerPage = 10
+  const totalPages = (products?.length) / (productsPerPage)
+  const endIndex=currentPage*productsPerPage
+  const startIndex=endIndex-productsPerPage
 
   useEffect(() => {
     dispatch(fetchProductThunk());
   }, []);
+
+  const nextPageNavigation = () => {
+    if (currentPage < totalPages) {
+      dispatch(nextPage())
+    }
+  }
+  const prevPageNavigation = () => {
+    if (currentPage > 1) {
+      dispatch(prevPage())
+    }
+  }
   return (
     <>
       {/* Hero Section */}
@@ -42,7 +58,7 @@ function Landing() {
                 <h2 className="text-center text-danger">{error}</h2>
               ) : (
                 <div className="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-                  {products.map((item) => (
+                  {products.slice(startIndex,endIndex).map((item) => (
                     <div className="col mb-5" key={item.id}>
                       <div className="card h-100">
                         <Link to={`/details/${item.id}`}>
@@ -55,19 +71,19 @@ function Landing() {
                         <div className="card-body p-4">
                           <div className="text-center">
                             <h5 className="fw-bolder">{item.title}</h5>
-            
+
                             <span>{item.category}</span><br />
                             <span>{item.price}</span>
                           </div>
                         </div>
                         <div className="d-flex justify-content-between p-2">
-                          <button className="btn" onClick={()=>{dispatch(addToWishlist(item))}}>
+                          <button className="btn" onClick={() => { dispatch(addToWishlist(item)) }}>
                             <i
                               className="fa-solid fa-heart-circle-plus"
                               style={{ color: "#f00f31", fontSize: "25px" }}
                             ></i>
                           </button>
-                          <button className="btn" onClick={()=>{dispatch(addToCart(item))}}>
+                          <button className="btn" onClick={() => { dispatch(addToCart(item)) }}>
                             <i
                               className="fa-solid fa-cart-plus"
                               style={{ color: "#0a5ef0", fontSize: "25px" }}
@@ -85,11 +101,11 @@ function Landing() {
       </section>
       <div className="my-3 d-flex justify-content-center">
         <div className="d-flex gap-3 align-items-center">
-          <button className="btn">
+          <button className="btn" onClick={prevPageNavigation}>
             <i className="fa-solid fa-angles-left"></i>
           </button>
-          <span>1/10</span>
-          <button className="btn">
+          <span>{currentPage}/{totalPages}</span>
+          <button className="btn" onClick={nextPageNavigation}>
             <i className="fa-solid fa-angles-right"></i>
           </button>
         </div>
