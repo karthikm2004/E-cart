@@ -123,7 +123,7 @@ function Cart() {
               Total Price : <span className='text-success'>₹{cart?.reduce((prev, item) => prev + (item.quantity * item.price), 0)}</span>
             </h4>
             <div className='d-grid'>
-              <button className="btn btn-success btn-lg fw-bold shadow-sm" onClick={checkout}>CHECKOUT</button>
+              <button className="btn btn-success btn-lg fw-bold shadow-sm" onClick={()=>{dispatch(checkout())}}>CHECKOUT</button>
             </div>
           </div>
         </div>

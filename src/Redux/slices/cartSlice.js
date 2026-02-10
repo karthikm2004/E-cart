@@ -30,7 +30,7 @@ const cartSlice=createSlice({
                 return state=state.filter(item=>item.id!=payload.payload)
             }
         },
-        checkout:(state,payload)=>{
+        checkout:(state)=>{
             return state=[]
         }
     }
