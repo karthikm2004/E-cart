@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector,useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { removeFromCart } from '../Redux/slices/cartSlice';
 import { incrementQuantity } from '../Redux/slices/cartSlice';
 import { decrementQuantity } from '../Redux/slices/cartSlice';
@@ -7,13 +7,13 @@ import { checkout } from '../Redux/slices/cartSlice';
 
 function Cart() {
 
-  const dispatch=useDispatch()
+  const dispatch = useDispatch()
 
   const cart = useSelector(state => state.cartReducer)
 
   return (
     <div className="container-fluid py-4">
-      <h2 className="mb-4 text-center text-md-start">Cart Summary</h2>
+      <h1 className="mb-4 text-center text-md-start ">Cart Summary</h1>
       <div className="row">
 
         {/* Left Side: Cart Items */}
@@ -21,35 +21,43 @@ function Cart() {
 
           {/* Mobile View: Vertical Cards (Visible only on small screens) */}
           <div className="d-block d-md-none">
-            <div className="card shadow-sm mb-3 p-3">
-              <div className="d-flex align-items-center mb-3">
-                
-                <img
-                  src="https://static1.pocketnowimages.com/wordpress/wp-content/uploads/2023/09/pbi-iphone-15-pro.png"
-                  style={{ width: '80px' }}
-                  alt="product"
-                />
-                <div className="ms-3">
-                  <h6 className="mb-0 fw-bold">Iphone 15</h6>
-                  <small className="text-muted">Unit Price: ₹1,50,000</small>
+            {cart.map((item) => (
+              <div className="card shadow-sm mb-3 p-3" key={item.id}>
+                <div className="d-flex align-items-center mb-3">
+                  <img
+                    src={item.thumbnail}
+                    style={{ width: "80px" }}
+                    alt="product"
+                  />
+
+                  <div className="ms-3">
+                    <h6 className="mb-0 fw-bold">{item.title}</h6>
+                    <small className="text-muted">Unit Price: ₹{item.price}</small>
+                  </div>
+
+                  <button className="btn ms-auto text-danger">
+                    <i className="fa-solid fa-trash"></i>
+                  </button>
                 </div>
-                <button className="btn ms-auto text-danger">
-                  <i className="fa-solid fa-trash"></i>
-                </button>
+
+                <div className="d-flex justify-content-between align-items-center">
+                  <div className="d-flex align-items-center">
+                    <button className="btn btn-sm btn-success px-3" onClick={() => { dispatch(incrementQuantity(item.id)) }}>+</button>
+                    <span className="mx-3 fw-bold">{item.quantity || 1}</span>
+                    <button className="btn btn-sm btn-danger px-3" onClick={() => { dispatch(decrementQuantity(item.id)) }}>-</button>
+                  </div>
+
+                  <div className="text-end">
+                    <small className="d-block text-muted">Total</small>
+                    <span className="fw-bold text-success">
+                      ₹{(item.price * (item.quantity || 1))}
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div className="d-flex justify-content-between align-items-center">
-                <div className="d-flex align-items-center">
-                  <button className="btn btn-sm btn-success px-3">+</button>
-                  <span className="mx-3 fw-bold">2</span>
-                  <button className="btn btn-sm btn-danger px-3">-</button>
-                </div>
-                <div className="text-end">
-                  <small className="d-block text-muted">Total</small>
-                  <span className="fw-bold text-success">₹3,00,000</span>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
+
 
           {/* Desktop View: Table (Hidden on small screens) */}
           <div className="d-none d-md-block table-responsive shadow-sm">
@@ -77,14 +85,14 @@ function Cart() {
                           <td>{item.price}</td>
                           <td>
                             <div className="d-flex justify-content-center align-items-center">
-                              <button className="btn btn-sm btn-success" onClick={()=>{dispatch(incrementQuantity(item.id))}}>+</button>
+                              <button className="btn btn-sm btn-success" onClick={() => { dispatch(incrementQuantity(item.id)) }}>+</button>
                               <input type="text" className="form-control form-control-sm mx-2 text-center" style={{ width: '40px' }} value={item.quantity} readOnly />
-                              <button className="btn btn-sm btn-danger" onClick={()=>{dispatch(decrementQuantity(item.id))}}>-</button>
+                              <button className="btn btn-sm btn-danger" onClick={() => { dispatch(decrementQuantity(item.id)) }}>-</button>
                             </div>
                           </td>
                           <td className="fw-bold text-success">{item.price * item.quantity}</td>
                           <td>
-                            <button className='btn btn-outline-danger border-0' onClick={()=>{dispatch(removeFromCart(item.id))}}>
+                            <button className='btn btn-outline-danger border-0' onClick={() => { dispatch(removeFromCart(item.id)) }}>
                               <i className="fa-solid fa-trash"></i>
                             </button>
                           </td>
@@ -112,7 +120,7 @@ function Cart() {
             </h4>
             <hr />
             <h4 className="d-flex justify-content-between mb-4 text-dark">
-              Total Price : <span className='text-success'>₹{cart?.reduce((prev,item)=>prev+(item.quantity*item.price),0)}</span>
+              Total Price : <span className='text-success'>₹{cart?.reduce((prev, item) => prev + (item.quantity * item.price), 0)}</span>
             </h4>
             <div className='d-grid'>
               <button className="btn btn-success btn-lg fw-bold shadow-sm" onClick={checkout}>CHECKOUT</button>
